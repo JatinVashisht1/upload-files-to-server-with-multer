@@ -1,0 +1,14 @@
+{
+  "name": "uploadfilesinexpressjs",
+  "version": "1.0.0",
+  "description": "uploading files with multer and express",
+  "main": "app.js",
+  "scripts": {
+    "start": "nodemon app.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "multer": "^1.4.4"
+  }
+}
