@@ -19,7 +19,8 @@ const storage = multer.diskStorage(
 
 // initialize upload variable
 const upload = multer({
-    storage: storage
+    storage: storage,
+    limits: {fileSize: 10}
 }).single('myImage'); // myImage is the field name 
 // you can also upload more than 1 images just use array instead of single
 
