@@ -1,4 +1,5 @@
 const express = require("express");
+const { readFile } = require("fs");
 const multer = require("multer");
 const path = require("path");
 
@@ -17,11 +18,31 @@ const storage = multer.diskStorage(
     }
 );
 
+function checkFileType(file, cb) {
+    // allowed ext
+    const filetypes = /jpeg|jpg|png|gif/;
+    // check ext
+    const extname = filetypes.test(path.extname(file.originalname).toLowerCase());
+    // check mime type
+    const mimetype = filetypes.test(file.mimetype)
+
+    if (mimetype && extname) {
+        return cb(null, true);
+    } else {
+        return cb('Error: Images Only');
+    }
+}
+
 // initialize upload variable
 const upload = multer({
     storage: storage,
     // setting filesize limits
-    limits: {fileSize: 1000000}
+    limits: {
+        fileSize: 1000000,
+    },
+    fileFilter: function (req, file, cb) {
+        checkFileType(file, cb);
+    }
 }).single('myImage'); // myImage is the field name 
 // you can also upload more than 1 images just use array instead of single
 
@@ -38,12 +59,16 @@ app.get('/', (res, req) => {
 })
 
 app.post('/upload', (req, res) => {
-    upload(req, res, (err) =>{
-        if(err){
-            res.send("Unable to upload file,")
-        }else{
-            console.log(req.file)
-            res.send("file uploaded")
+    upload(req, res, (err) => {
+        if (err) {
+            res.send("Unable to upload file, " + err)
+        } else {
+            if (req.file == undefined) {
+                res.send("Select a file mf :)")
+            } else {
+                console.log(req.file)
+                res.send("file uploaded")
+            }
         }
     });
 });
